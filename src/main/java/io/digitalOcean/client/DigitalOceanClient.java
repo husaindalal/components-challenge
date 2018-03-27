@@ -23,6 +23,7 @@ public class DigitalOceanClient {
 
     public List<DOComponent> getDoComponents() {
 
+        //TODO surround with circuit breaker: https://cloud.spring.io/spring-cloud-netflix/multi/multi__circuit_breaker_hystrix_clients.html
         DOPageComponents pageComponents = restTemplate.getForObject(URL, DOPageComponents.class);
 
         //Need not check pageComponents null
@@ -30,4 +31,17 @@ public class DigitalOceanClient {
     }
 
 
+//    static class Mapper {
+//        static Component toDto(DOComponent doComponent) {
+//            Component component = new Component();
+//            component.setName();
+//        }
+//
+//        static List<Component> toDto(List<DOComponent> doComponents) {
+//            if(doComponents == null || doComponents.isEmpty()) {
+//                return new ArrayList<>();
+//            }
+//
+//        }
+//    }
 }

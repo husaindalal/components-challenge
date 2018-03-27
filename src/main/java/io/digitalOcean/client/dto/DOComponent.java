@@ -1,11 +1,18 @@
 package io.digitalOcean.client.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@NoArgsConstructor
+
 public class DOComponent implements Serializable {
     private final static long serialVersionUID = 4407549116749457004L;
 

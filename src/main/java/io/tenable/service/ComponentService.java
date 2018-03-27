@@ -1,63 +1,73 @@
 package io.tenable.service;
 
+import io.digitalOcean.client.DigitalOceanClient;
+import io.digitalOcean.client.dto.DOComponent;
 import io.tenable.dto.Component;
 import io.tenable.entity.ComponentEntity;
-import io.tenable.exception.CustomException;
 import io.tenable.repository.ComponentRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
+@Log4j2
 public class ComponentService {
 
     private ComponentRepository componentRepository;
+    private static final Set<String> VALID_STATUSES = Stream.of("operational",
+            "degraded_performance", "partial_outage", "major_outage").collect(Collectors.toSet()); //Can be enums too
+    private DigitalOceanClient digitalOceanClient;
 
     @Autowired
-    public ComponentService(ComponentRepository componentRepository) {
+    public ComponentService(ComponentRepository componentRepository, DigitalOceanClient digitalOceanClient) {
         this.componentRepository = componentRepository;
+        this.digitalOceanClient = digitalOceanClient;
     }
 
-    public List<Component> findAll() {
-        return Mapper.toDto(componentRepository.findAll());
+
+    public List<Component> getComponents(Set<String> names) {
+        //Log the count and size of array
+        List<Component> components = digitalOceanClient.getDoComponents().stream()
+                .filter(comp -> validateAndFilter(comp, names))
+                .map(this::transform)
+                .collect(Collectors.toList());
+
+        //TODO save asynchronously
+        log.info("Components found {}", components);
+
+        return components;
     }
 
-    public Optional<Component> findById(Long id) {
-        if (id == null || id < 1) {
-            return Optional.empty();
-        }
-        return componentRepository.findById(id).map(Mapper::toDto);
-    }
+    private boolean validateAndFilter(DOComponent doComponent, Set<String> names) {
 
-    public Component save(@Valid Component component) {
-        try {
-            return Mapper.toDto(componentRepository.save(Mapper.toDao(component)));
-        } catch (Exception e) {
-            throw new CustomException(e.getMessage(), e);
-        }
-    }
-
-    public void delete(Long personId) {
-        Optional<ComponentEntity> person = componentRepository.findById(personId);
-        if (person.isPresent()) {
-            componentRepository.deleteById(personId);
-
-        } else {
-            throw new CustomException("Component not found");
-        }
+        return VALID_STATUSES.contains(doComponent.getStatus())
+                && (doComponent.getGroupId() != null && !doComponent.getGroupId().isEmpty())
+                && (names == null || names.contains(doComponent.getName()));
 
     }
 
+    private Component transform(DOComponent doComponent) {
+        Component component = new Component();
+        component.setCompositeId(doComponent.getPageId() + doComponent.getGroupId());
+        component.setName(doComponent.getName());
+        component.setStatus(doComponent.getStatus());
+        return component;
+    }
+
+    /**
+     * We can also move the mapper and repository interactions into a EntityService but it seemed to be overkill
+     */
     static class Mapper {
         static Component toDto(ComponentEntity componentEntity) {
             Component component = new Component();
-            component.setId(componentEntity.getId());
-            component.setFirstName(componentEntity.getFirstName());
-            component.setLastName(componentEntity.getLastName());
+            component.setStatus(componentEntity.getStatus());
+            component.setName(componentEntity.getName());
+            component.setCompositeId(componentEntity.getCompositeId());
 
             return component;
         }
@@ -68,9 +78,9 @@ public class ComponentService {
 
         static ComponentEntity toDao(Component component) {
             ComponentEntity componentEntity = new ComponentEntity();
-            componentEntity.setId(component.getId());
-            componentEntity.setFirstName(component.getFirstName());
-            componentEntity.setLastName(component.getLastName());
+            componentEntity.setStatus(component.getStatus());
+            componentEntity.setName(component.getName());
+            componentEntity.setCompositeId(component.getCompositeId());
 
             return componentEntity;
         }

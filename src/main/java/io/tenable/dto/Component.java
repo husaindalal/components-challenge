@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
@@ -13,13 +11,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Component implements Serializable {
-    @Min(1)
-    private Long id;
 
-    @NotNull
-    private String firstName;
+    private String status; //can be a enum if there is logic associated with it. Or it can be a DB table
 
-    @NotNull
-    private String lastName;
+    private String name;
+
+    private String compositeId;
 
 }
