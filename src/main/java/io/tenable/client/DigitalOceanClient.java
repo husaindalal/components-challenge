@@ -26,10 +26,16 @@ public class DigitalOceanClient {
 
     }
 
+    /**
+     * Main client method to retrieve components from Digital Ocean.
+     * TODO surround with circuit breaker: https://cloud.spring.io/spring-cloud-netflix/multi/multi__circuit_breaker_hystrix_clients.html
+     * TODO limit the results so future expansion does not affect performance
+     *
+     * @return
+     */
     public List<DOComponent> getDoComponents() {
 
         log.info("Calling DigitalOcean url {} ", URL);
-        //TODO surround with circuit breaker: https://cloud.spring.io/spring-cloud-netflix/multi/multi__circuit_breaker_hystrix_clients.html
         DOPageComponents pageComponents = restTemplate.getForObject(URL, DOPageComponents.class);
 
         List<DOComponent> components = new ArrayList<>();

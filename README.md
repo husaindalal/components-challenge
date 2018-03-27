@@ -2,14 +2,11 @@
 gradle bootRun
 
 
-uses in-memory h2 database
-
-
 #Application API docs 
 http://localhost:8080/swagger-ui.html#/component-controller/getComponentsUsingGET
 
 #Application health
-
+http://localhost:8080/actuator/health
 
 #Code Structure
 Component dto - Primary object used for transfer of information

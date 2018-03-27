@@ -44,6 +44,17 @@ public class ComponentController {
     }
 
 
+    @ApiOperation(
+            value = "View into the DB components currently present"
+    )
+    @GetMapping("/database")
+    public List<Component> getDatabaseComponents() {
+
+        return componentService.getDatabaseComponents();
+    }
+
+
+
     private Set<String> getComponentNames(String nameParam) {
         Set<String> names = null;
         if (nameParam != null && nameParam.trim().length() > 0) {

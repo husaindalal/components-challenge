@@ -14,9 +14,6 @@ spring:
     username: sa
     password:
     driverClassName: org.h2.Driver
-  h2:
-    console:
-      enabled: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -33,7 +30,11 @@ spring:
   h2:
     console:
       enabled: true
-      path: /console
+      path: /h2-console
       settings:
         trace: false
         web-allow-others: false
+
+digitalOcean:
+  components:
+    url:

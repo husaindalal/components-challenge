@@ -16,9 +16,9 @@ import javax.persistence.Table;
 public class ComponentEntity {
 
     @Id
-    private String compositeId;
-
     private String name;
+
+    private String compositeId;
 
     private String status;
 }
