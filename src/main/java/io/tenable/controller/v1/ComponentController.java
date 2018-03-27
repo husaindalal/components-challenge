@@ -33,10 +33,10 @@ public class ComponentController {
                     "If  name  is specified, then filter the JSON received from DO to only include  components where  component.name = <name specified in query string> ."
     )
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Showing all people found")
+            @ApiResponse(code = 200, message = "Showing all components that matched the criteria")
     })
     @GetMapping
-    public List<Component> getComponents(@RequestParam(value = "name") String nameParam) {
+    public List<Component> getComponents(@RequestParam(value = "name", required = false) String nameParam) {
 
         Set<String> names = getComponentNames(nameParam);
 
@@ -49,6 +49,7 @@ public class ComponentController {
         if (nameParam != null && nameParam.trim().length() > 0) {
             names = Stream.of(nameParam.split(","))
                     .map(String::new)
+                    .map(String::toLowerCase)
                     .filter(it -> it.trim().length() > 0)
                     .collect(Collectors.toSet());
 

@@ -1,11 +1,12 @@
 #Running application
-springboot run
+gradle bootRun
+
 
 uses in-memory h2 database
 
 
 #Application API docs 
-http://localhost:8080/swagger-ui.html#/component-controller
+http://localhost:8080/swagger-ui.html#/component-controller/getComponentsUsingGET
 
 #Application health
 

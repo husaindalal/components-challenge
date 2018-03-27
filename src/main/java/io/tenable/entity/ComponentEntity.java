@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "person")
+@Table(name = "component")
 
 @Data
 //@Builder TODO ideally use builder but Jackson requires NoArgsConstructor

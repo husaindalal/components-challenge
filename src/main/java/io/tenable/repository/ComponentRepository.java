@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface ComponentRepository extends JpaRepository<ComponentEntity, Long> {
 
-    List<ComponentEntity> findByLastName(@Param("name") String name);
+    List<ComponentEntity> findByName(@Param("name") String name);
 
 }

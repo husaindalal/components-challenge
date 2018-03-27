@@ -1,4 +1,4 @@
-package io.digitalOcean.client.dto;
+package io.tenable.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

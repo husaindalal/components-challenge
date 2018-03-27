@@ -1,4 +1,3 @@
-# INSERT INTO component (id, first_name, last_name) VALUES (1, 'Jeff', 'Bezos');
-# INSERT INTO component (id, first_name, last_name) VALUES (2, 'Satya', 'Nadella');
-# INSERT INTO component (id, first_name, last_name) VALUES (3, 'Sundar', 'Pichai');
-# INSERT INTO component (id, first_name, last_name) VALUES (4, 'Tim', 'Cook');
+INSERT INTO component (composite_id, name, status) VALUES ('wawlrkeiogb', 'component1', 'operational');
+INSERT INTO component (composite_id, name, status) VALUES ('wawlrkeo3i4ht', 'component2', 'operational');
+INSERT INTO component (composite_id, name, status) VALUES ('WLEJNFWLGeiogb', 'component3', 'operational');

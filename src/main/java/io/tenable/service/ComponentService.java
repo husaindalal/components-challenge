@@ -1,9 +1,10 @@
 package io.tenable.service;
 
-import io.digitalOcean.client.DigitalOceanClient;
-import io.digitalOcean.client.dto.DOComponent;
+import io.tenable.client.DigitalOceanClient;
+import io.tenable.client.dto.DOComponent;
 import io.tenable.dto.Component;
 import io.tenable.entity.ComponentEntity;
+import io.tenable.metrics.Metrics;
 import io.tenable.repository.ComponentRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,16 @@ public class ComponentService {
 
     public List<Component> getComponents(Set<String> names) {
         //Log the count and size of array
+        log.info("Get Components called with params {} ", names);
         List<Component> components = digitalOceanClient.getDoComponents().stream()
                 .filter(comp -> validateAndFilter(comp, names))
                 .map(this::transform)
                 .collect(Collectors.toList());
 
-        //TODO save asynchronously
-        log.info("Components found {}", components);
+        //TODO save asynchronously either using CompletableFuture or Publishing event
 
+        Metrics.add("getComponents", (long) components.size(), names);
+        log.info("Components retrieved for params {}: {} ", names, components.size());
         return components;
     }
 
@@ -47,7 +50,8 @@ public class ComponentService {
 
         return VALID_STATUSES.contains(doComponent.getStatus())
                 && (doComponent.getGroupId() != null && !doComponent.getGroupId().isEmpty())
-                && (names == null || names.contains(doComponent.getName()));
+                && doComponent.getName() != null
+                && (names == null || names.contains(doComponent.getName().toLowerCase()));
 
     }
 
